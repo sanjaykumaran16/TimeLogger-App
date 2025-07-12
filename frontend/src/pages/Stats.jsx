@@ -101,9 +101,9 @@ const Stats = () => {
         })}
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Activity Summary */}
+      {/* Top Activities & Productivity Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Top Activities */}
         <div className="card">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Top Activities
@@ -124,7 +124,7 @@ const Stats = () => {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900 dark:text-white">
-                      {formatTime(activity.totalMinutes)}
+                      {activity.totalMinutes}m
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {activity.count} entries
@@ -135,20 +135,20 @@ const Stats = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 dark:text-gray-400">
+              <span className="text-gray-600 dark:text-gray-400">
                 No activity data available
-              </p>
+              </span>
             </div>
           )}
         </div>
 
-        {/* Productivity Trends */}
+        {/* Productivity Insights */}
         <div className="card">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Productivity Insights
           </h3>
           <div className="space-y-4">
+            {/* Most Productive Day */}
             <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
               <div>
                 <p className="font-medium text-blue-900 dark:text-blue-100">
@@ -160,11 +160,11 @@ const Stats = () => {
               </div>
               <div className="text-right">
                 <p className="font-semibold text-blue-900 dark:text-blue-100">
-                  {formatTime(stats.mostProductiveDay?.totalMinutes || 0)}
+                  {stats.mostProductiveDay?.totalMinutes || 0}m
                 </p>
               </div>
             </div>
-
+            {/* Longest Session */}
             <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
               <div>
                 <p className="font-medium text-green-900 dark:text-green-100">
@@ -176,11 +176,11 @@ const Stats = () => {
               </div>
               <div className="text-right">
                 <p className="font-semibold text-green-900 dark:text-green-100">
-                  {formatTime(stats.longestSession?.minutes || 0)}
+                  {stats.longestSession?.minutes || 0}m
                 </p>
               </div>
             </div>
-
+            {/* Weekly Average */}
             <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
               <div>
                 <p className="font-medium text-purple-900 dark:text-purple-100">
@@ -192,7 +192,7 @@ const Stats = () => {
               </div>
               <div className="text-right">
                 <p className="font-semibold text-purple-900 dark:text-purple-100">
-                  {formatTime(stats.weekAverage || 0)}
+                  {stats.weekAverage || 0}m
                 </p>
               </div>
             </div>

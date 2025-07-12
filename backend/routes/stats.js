@@ -6,24 +6,75 @@ const router = express.Router();
 router.get('/overview', async (req, res) => {
   try {
     const totalLogs = await Log.countDocuments();
-    const totalMinutes = await Log.aggregate([
+    const totalMinutesAgg = await Log.aggregate([
       { $group: { _id: null, total: { $sum: '$minutes' } } }
     ]);
+    const totalMinutes = totalMinutesAgg[0]?.total || 0;
 
     const uniqueActivities = await Log.distinct('activity');
-    const uniqueCategories = await Log.distinct('category');
 
-    const firstLog = await Log.findOne().sort({ createdAt: 1 });
-    const lastLog = await Log.findOne().sort({ createdAt: -1 });
+    // Activity summary (all time)
+    const activitySummary = await Log.aggregate([
+      {
+        $group: {
+          _id: '$activity',
+          totalMinutes: { $sum: '$minutes' },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { totalMinutes: -1 } }
+    ]);
+
+    // Most productive day (by total minutes)
+    const mostProductiveDayAgg = await Log.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+          totalMinutes: { $sum: '$minutes' },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { totalMinutes: -1 } },
+      { $limit: 1 }
+    ]);
+    const mostProductiveDay = mostProductiveDayAgg[0] || null;
+
+    // Longest session (single log with max minutes)
+    const longestSession = await Log.findOne().sort({ minutes: -1 });
+
+    // Weekly average (average per day for the last 7 days)
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
+    weekAgo.setHours(0, 0, 0, 0);
+    const weekStats = await Log.aggregate([
+      {
+        $match: {
+          date: { $gte: weekAgo, $lte: now }
+        }
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+          totalMinutes: { $sum: '$minutes' },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    const weekAverage = weekStats.length > 0 ? Math.round(weekStats.reduce((sum, d) => sum + d.totalMinutes, 0) / weekStats.length) : 0;
 
     res.json({
-      totalLogs,
-      totalMinutes: totalMinutes[0]?.total || 0,
+      activitySummary,
+      mostProductiveDay,
+      longestSession: longestSession ? {
+        activity: longestSession.activity,
+        minutes: longestSession.minutes,
+        date: longestSession.date
+      } : null,
+      weekAverage,
+      totalMinutes,
+      totalEntries: totalLogs,
       uniqueActivities: uniqueActivities.length,
-      uniqueCategories: uniqueCategories.length,
-      firstLogDate: firstLog?.createdAt,
-      lastLogDate: lastLog?.createdAt,
-      averageMinutesPerLog: totalLogs > 0 ? Math.round(totalMinutes[0]?.total / totalLogs) : 0
+      averageMinutesPerLog: totalLogs > 0 ? Math.round(totalMinutes / totalLogs) : 0
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch overview statistics' });
