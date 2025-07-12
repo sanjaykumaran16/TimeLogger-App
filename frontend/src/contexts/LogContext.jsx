@@ -83,7 +83,7 @@ export const LogProvider = ({ children }) => {
   const [state, dispatch] = useReducer(logReducer, initialState)
 
   // API base URL
-  const API_BASE = import.meta.env.VITE_API_URL || '/api'
+  const API_BASE = '/api'
 
   // Fetch all logs
   const fetchLogs = async (params = {}) => {
