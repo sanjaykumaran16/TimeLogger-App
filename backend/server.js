@@ -4,7 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
-require('dotenv').config({ path: './config.env' });
+require('dotenv').config(); // defaults to .env
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,8 +15,8 @@ app.use(compression());
 // Disable HTTP request logging for cleaner output
 // app.use(morgan('combined'));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] 
+  origin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',')
     : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   credentials: true
 }));
