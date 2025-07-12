@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TimeLogger - Productivity Time Tracking Application
 
 A comprehensive web application for tracking daily activities and boosting productivity. Built with React, Node.js, Express, and MongoDB.
