@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TimeLogger - Productivity Time Tracking Application
 
 A comprehensive web application for tracking daily activities and boosting productivity. Built with React, Node.js, Express, and MongoDB.
@@ -198,3 +199,5 @@ timelogger/
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+=======
+
