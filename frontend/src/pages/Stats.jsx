@@ -3,13 +3,17 @@ import { BarChart3, TrendingUp, Activity, Target, Clock } from 'lucide-react'
 import { useLogs } from '../contexts/LogContext'
 
 const Stats = () => {
-  const { stats, loading } = useLogs()
+  const { stats, loading, fetchStats } = useLogs()
   const [timeframe, setTimeframe] = useState('week')
 
   // Debug logging
   console.log('Stats component - stats object:', stats)
   console.log('Stats component - uniqueActivities:', stats.uniqueActivities)
   console.log('Stats component - averageMinutesPerLog:', stats.averageMinutesPerLog)
+
+  const handleRefresh = () => {
+    fetchStats()
+  }
 
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60)
@@ -79,6 +83,16 @@ const Stats = () => {
             <option value="month">This Month</option>
             <option value="year">This Year</option>
           </select>
+          <button
+            onClick={handleRefresh}
+            className="ml-2 px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 flex items-center"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="animate-spin mr-2 h-4 w-4 border-b-2 border-white rounded-full inline-block"></span>
+            ) : null}
+            Refresh
+          </button>
         </div>
       </div>
 
