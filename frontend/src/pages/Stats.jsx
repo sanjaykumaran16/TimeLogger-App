@@ -6,6 +6,11 @@ const Stats = () => {
   const { stats, loading } = useLogs()
   const [timeframe, setTimeframe] = useState('week')
 
+  // Debug logging
+  console.log('Stats component - stats object:', stats)
+  console.log('Stats component - uniqueActivities:', stats.uniqueActivities)
+  console.log('Stats component - averageMinutesPerLog:', stats.averageMinutesPerLog)
+
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60

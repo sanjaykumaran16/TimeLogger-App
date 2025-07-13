@@ -12,6 +12,8 @@ const initialState = {
   stats: {
     totalMinutes: 0,
     totalEntries: 0,
+    uniqueActivities: 0,
+    averageMinutesPerLog: 0,
     activitySummary: []
   },
   dashboard: {
@@ -192,6 +194,7 @@ export const LogProvider = ({ children }) => {
   const fetchStats = async () => {
     try {
       const response = await axios.get(`${API_BASE}/stats/overview`)
+      console.log('Stats API response:', response.data)
       dispatch({ type: 'SET_STATS', payload: response.data })
     } catch (error) {
       console.error('Failed to fetch stats:', error)
