@@ -102,11 +102,7 @@ export const LogProvider = ({ children }) => {
     try {
       const response = await axios.get(`${API_BASE}/logs/date/${date}`)
       dispatch({ type: 'SET_TODAY_LOGS', payload: response.data.logs })
-      dispatch({ type: 'SET_STATS', payload: {
-        totalMinutes: response.data.dailyTotal,
-        totalEntries: response.data.totalEntries,
-        activitySummary: response.data.activitySummary
-      }})
+      // Removed SET_STATS dispatch here to avoid overwriting stats with partial data
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: error.response?.data?.error || 'Failed to fetch logs for date' })
     }
